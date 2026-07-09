@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bielersee Status – Design System v1.0</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  /* ============================================================
+     BIELERSEE DESIGN TOKENS
+  ============================================================ */
+  :root {
+    /* --- Lake Palette --- */
+    --lake-900: #0a1628;
+    --lake-800: #0d2044;
+    --lake-700: #0f2d5c;
+    --lake-600: #1a4080;
+    --lake-500: #2563a8;
+    --lake-400: #3b82c4;
+
+    /* --- Teal Accent --- */
+    --teal-400: #2dd4c8;
+    --teal-300: #5eead4;
+    --teal-200: #99f6e4;
+
+    /* --- Sand (Light Mode) --- */
+    --sand-100: #fdf8f0;
+    --sand-200: #f5eddb;
+
+    /* --- Temperature Status --- */
+    --temp-warm-color:     #f59e0b;
+    --temp-warm-bg:        rgba(245,158,11,0.10);
+    --temp-warm-border:    rgba(245,158,11,0.20);
+    --temp-pleasant-color: #34d399;
+    --temp-pleasant-bg:    rgba(52,211,153,0.10);
+    --temp-pleasant-border:rgba(52,211,153,0.20);
+    --temp-cool-color:     #60a5fa;
+    --temp-cool-bg:        rgba(96,165,250,0.10);
+    --temp-cool-border:    rgba(96,165,250,0.20);
+
+    /* --- Text --- */
+    --text-primary:   #f1f5f9;
+    --text-secondary: #e2e8f0;
+    --text-muted:     #94a3b8;
+    --text-subtle:    #64748b;
+    --text-faint:     #475569;
+
+    /* --- Live --- */
+    --live-green: #22c55e;
+
+    /* --- Glass --- */
+    --glass-bg:       rgba(255,255,255,0.06);
+    --glass-border:   rgba(255,255,255,0.10);
+    --glass-blur:     12px;
+    --glass-dark-bg:  rgba(10,22,40,0.75);
+    --glass-dark-border: rgba(255,255,255,0.08);
+    --glass-dark-blur: 16px;
+
+    /* --- Typography --- */
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Mono', 'Consolas', monospace;
+
+    /* --- Type Scale --- */
+    --text-xs:   0.6875rem; /* 11px */
+    --text-sm:   0.75rem;   /* 12px */
+    --text-base: 0.875rem;  /* 14px */
+    --text-lg:   1rem;      /* 16px */
+    --text-xl:   1.25rem;   /* 20px */
+    --text-2xl:  1.375rem;  /* 22px */
+    --text-3xl:  clamp(1.4rem, 5vw, 2.2rem);
+    --text-temp: 2.75rem;   /* 44px */
+    --text-hero: clamp(2.5rem, 7vw, 4rem);
+
+    /* --- Spacing (4px grid) --- */
+    --sp-1:  0.25rem;
+    --sp-2:  0.5rem;
+    --sp-3:  0.75rem;
+    --sp-4:  1rem;
+    --sp-5:  1.25rem;
+    --sp-6:  1.5rem;
+    --sp-8:  2rem;
+    --sp-10: 2.5rem;
+    --sp-12: 3rem;
+    --sp-16: 4rem;
+    --sp-20: 5rem;
+    --sp-24: 6rem;
+
+    /* --- Border Radius --- */
+    --radius-sm:   4px;
+    --radius-md:   8px;
+    --radius-lg:   12px;
+    --radius-xl:   16px;
+    --radius-full: 9999px;
+
+    /* --- Shadows --- */
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.3);
+    --shadow-hover: 0 12px 40px rgba(0,0,0,0.4);
+    --shadow-hero: 0 32px 80px rgba(0,0,0,0.5);
+
+    /* --- Transitions --- */
+    --transition-fast: 150ms ease;
+    --transition-base: 220ms ease;
+    --transition-slow: 380ms ease;
+
+    /* --- Z-Index --- */
+    --z-base:    0;
+    --z-above:   10;
+    --z-nav:     100;
+    --z-overlay: 200;
+
+    /* --- Layout --- */
+    --container-max: 1152px;
+    --section-py: var(--sp-16);
+    --header-height: 64px;
+  }
+
+  /* ============================================================
+     BASE
+  ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--color-gray-900, #1e1d1c);
+    background: #f4f3f0;
+  }
+
+  /* ============================================================
+     GUIDE NAVIGATION
+  ============================================================ */
+  .guide-nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 220px;
+    height: 100vh;
+    background: var(--lake-900);
+    padding: var(--sp-8) var(--sp-6);
+    overflow-y: auto;
+    z-index: 100;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .guide-nav-logo {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+    margin-bottom: var(--sp-8);
+    padding-bottom: var(--sp-4);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    line-height: 1.4;
+  }
+  .guide-nav-logo span {
+    display: block;
+    font-size: 10px;
+    color: var(--text-faint);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+  .guide-nav-section {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: var(--sp-6) 0 var(--sp-2);
+  }
+  .guide-nav a {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 3px 0;
+    transition: color var(--transition-fast);
+  }
+  .guide-nav a:hover { color: var(--text-primary); }
+  .guide-nav a.active { color: var(--teal-400); }
+
+  /* ============================================================
+     GUIDE CONTENT
+  ============================================================ */
+  .guide-content {
+    margin-left: 220px;
+    padding: var(--sp-16) var(--sp-12);
+    max-width: calc(1200px + 220px);
+  }
+
+  /* ============================================================
+     CHAPTER HEADERS
+  ============================================================ */
+  .chapter {
+    padding: var(--sp-20) 0 var(--sp-12);
+    border-top: 1px solid #d5d3ce;
+    margin-top: var(--sp-16);
+  }
+  .chapter:first-of-type { border-top: none; margin-top: 0; }
+  .chapter-tag {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+    margin-bottom: var(--sp-3);
+  }
+  .chapter-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--lake-800);
+    line-height: 1.1;
+    margin-bottom: var(--sp-4);
+  }
+  .chapter-subtitle {
+    font-size: 1.125rem;
+    font-weight: 300;
+    color: #4a4947;
+    line-height: 1.65;
+    max-width: 600px;
+  }
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--lake-800);
+    margin: var(--sp-12) 0 var(--sp-6);
+    padding-bottom: var(--sp-3);
+    border-bottom: 1px solid #e5e3de;
+  }
+
+  /* ============================================================
+     NOTES & WARNINGS
+  ============================================================ */
+  .note {
+    background: rgba(45,212,200,0.08);
+    border-left: 3px solid var(--teal-400);
+    padding: var(--sp-4) var(--sp-6);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: var(--text-base);
+    color: var(--lake-700);
+    margin: var(--sp-6) 0;
+    line-height: 1.65;
+  }
+  .warning {
+    background: #fef3e2;
+    border-left: 3px solid #a86b1a;
+    padding: var(--sp-4) var(--sp-6);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: var(--text-base);
+    color: #6b3e0a;
+    margin: var(--sp-6) 0;
+  }
+
+  /* ============================================================
+     TOKEN TABLES
+  ============================================================ */
+  .token-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-base);
+    margin: var(--sp-4) 0 var(--sp-8);
+  }
+  .token-table th {
+    text-align: left;
+    font-weight: 700;
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8a8885;
+    padding: var(--sp-2) var(--sp-4) var(--sp-2) 0;
+    border-bottom: 1px solid #c4c2be;
+  }
+  .token-table td {
+    padding: var(--sp-3) var(--sp-4) var(--sp-3) 0;
+    border-bottom: 1px solid #eceae6;
+    color: #1e1d1c;
+    vertical-align: middle;
+  }
+  .token-table code {
+    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    background: #eceae6;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--lake-600);
+  }
+  .token-preview {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: var(--sp-2);
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+
+  /* ============================================================
+     COLOR SWATCHES
+  ============================================================ */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--sp-4);
+    margin: var(--sp-6) 0 var(--sp-10);
+  }
+  .color-swatch {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  }
+  .swatch-block { height: 72px; }
+  .swatch-info {
+    padding: var(--sp-3);
+    background: white;
+  }
+  .swatch-name {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: #1e1d1c;
+    margin-bottom: 2px;
+  }
+  .swatch-hex {
+    font-size: var(--text-sm);
+    color: #8a8885;
+    font-family: var(--font-mono);
+  }
+  .swatch-var {
+    font-size: 10px;
+    color: var(--lake-500);
+    font-family: var(--font-mono);
+    margin-top: 2px;
+  }
+
+  /* ============================================================
+     DARK PREVIEW WRAPPER
+  ============================================================ */
+  .dark-preview {
+    background: var(--lake-900);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-8);
+    margin: var(--sp-6) 0;
+  }
+  .dark-preview-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: var(--sp-6);
+  }
+
+  /* ============================================================
+     TYPOGRAPHY SPECIMENS
+  ============================================================ */
+  .type-specimen {
+    margin: var(--sp-4) 0;
+    padding: var(--sp-6);
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid #eceae6;
+  }
+  .type-meta {
+    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    color: #8a8885;
+    margin-top: var(--sp-2);
+    padding-top: var(--sp-2);
+    border-top: 1px solid #eceae6;
+  }
+
+  /* ============================================================
+     GLASS CARD COMPONENT
+  ============================================================ */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+  }
+  .glass-dark {
+    background: var(--glass-dark-bg);
+    backdrop-filter: blur(var(--glass-dark-blur));
+    -webkit-backdrop-filter: blur(var(--glass-dark-blur));
+    border: 1px solid var(--glass-dark-border);
+    border-radius: var(--radius-xl);
+  }
+
+  /* ============================================================
+     TEMPERATURE CARD
+  ============================================================ */
+  .temp-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    cursor: default;
+  }
+  .temp-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+  .temp-card-accent {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .temp-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .temp-card-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .temp-card-location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-subtle);
+    font-size: 12px;
+  }
+  .temp-value {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .temp-number {
+    font-size: 44px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .temp-unit {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--teal-400);
+    margin-bottom: 4px;
+  }
+  .temp-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ============================================================
+     STATUS BADGE
+  ============================================================ */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+  .badge-warm     { background: var(--temp-warm-bg);     color: var(--temp-warm-color);     border: 1px solid var(--temp-warm-border); }
+  .badge-pleasant { background: var(--temp-pleasant-bg); color: var(--temp-pleasant-color); border: 1px solid var(--temp-pleasant-border); }
+  .badge-cool     { background: var(--temp-cool-bg);     color: var(--temp-cool-color);     border: 1px solid var(--temp-cool-border); }
+
+  /* ============================================================
+     SOURCE BADGE
+  ============================================================ */
+  .source-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-sm);
+    padding: 2px 7px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--font);
+  }
+
+  /* ============================================================
+     FILTER BUTTON
+  ============================================================ */
+  .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.12);
+    font-family: var(--font);
+    transition: all var(--transition-fast);
+    background: transparent;
+  }
+  .filter-btn-active {
+    background: rgba(45,212,200,0.12);
+    color: var(--teal-400);
+    border-color: rgba(45,212,200,0.30);
+  }
+  .filter-btn-inactive {
+    background: transparent;
+    color: var(--text-muted);
+  }
+  .filter-btn-inactive:hover {
+    color: var(--text-primary);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  /* ============================================================
+     HERO CHIP
+  ============================================================ */
+  .hero-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    font-size: 13px;
+    color: var(--text-secondary);
+    backdrop-filter: blur(8px);
+  }
+  .hero-chip strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ============================================================
+     SCROLL CTA
+  ============================================================ */
+  .scroll-cta {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-faint);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color var(--transition-base);
+  }
+  .scroll-cta:hover { color: var(--teal-400); }
+  .scroll-cta-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.03);
+  }
+
+  /* ============================================================
+     LIVE DOT
+  ============================================================ */
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--live-green);
+    display: inline-block;
+    animation: pulse-dot 1.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.75); }
+  }
+  @keyframes bounce-arrow {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(6px); }
+  }
+  @keyframes temp-bar-in {
+    from { opacity: 0; transform: scaleX(0); }
+    to   { opacity: 1; transform: scaleX(1); }
+  }
+
+  /* ============================================================
+     HEADER COMPONENT
+  ============================================================ */
+  .header-demo {
+    background: rgba(10,22,40,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--sp-6);
+    justify-content: space-between;
+    border-radius: var(--radius-xl);
+    margin: var(--sp-6) 0;
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    text-decoration: none;
+  }
+  .header-logo-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(45,212,200,0.12);
+    border: 1px solid rgba(45,212,200,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .header-logo-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .header-logo-text em {
+    font-style: normal;
+    color: var(--teal-400);
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-8);
+    list-style: none;
+  }
+  .header-nav a {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(226,232,240,0.7);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    letter-spacing: 0.01em;
+  }
+  .header-nav a:hover { color: var(--text-primary); }
+
+  /* ============================================================
+     WEBCAM CARD
+  ============================================================ */
+  .webcam-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    cursor: default;
+  }
+  .webcam-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+  .webcam-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+    background: var(--lake-800);
+    position: relative;
+  }
+  .webcam-img-placeholder {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--lake-800);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-faint);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    position: relative;
+  }
+  .webcam-time {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.45);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .webcam-body { padding: 14px 16px; }
+  .webcam-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+  }
+  .webcam-location {
+    font-size: 12px;
+    color: var(--text-subtle);
+    margin-bottom: 8px;
+  }
+  .webcam-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .webcam-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .webcam-via {
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .webcam-open-btn {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--teal-400);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: opacity var(--transition-fast);
+  }
+  .webcam-open-btn:hover { opacity: 0.75; }
+
+  /* ============================================================
+     HERO SECTION
+  ============================================================ */
+  .hero-demo {
+    background: var(--lake-900);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-20) var(--sp-12);
+    margin: var(--sp-6) 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-bg-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 60%, rgba(37,99,168,0.35) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(45,212,200,0.10);
+    border: 1px solid rgba(45,212,200,0.20);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--sp-6);
+    font-size: 22px;
+    position: relative;
+  }
+  .hero-heading {
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--sp-4);
+    position: relative;
+  }
+  .hero-heading em {
+    font-style: normal;
+    color: var(--teal-400);
+  }
+  .hero-lead {
+    font-size: 17px;
+    color: rgba(226,232,240,0.65);
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto var(--sp-6);
+    position: relative;
+  }
+  .hero-stat-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-5) var(--sp-10);
+    margin-bottom: var(--sp-6);
+    position: relative;
+  }
+  .hero-stat-label {
+    font-size: 11px;
+    color: var(--text-subtle);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--sp-2);
+  }
+  .hero-stat-value {
+    font-size: 48px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .hero-stat-value sup {
+    font-size: 22px;
+    color: var(--teal-400);
+    font-weight: 600;
+    vertical-align: super;
+  }
+
+  /* ============================================================
+     TEMP GRADIENT TEXT
+  ============================================================ */
+  .temp-gradient {
+    background: linear-gradient(135deg, var(--teal-400), #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ============================================================
+     MAP / LEGEND
+  ============================================================ */
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-4);
+    margin: var(--sp-4) 0;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ============================================================
+     FOOTER COMPONENT
+  ============================================================ */
+  .footer-demo {
+    background: var(--lake-900);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-xl);
+    padding: var(--sp-10) var(--sp-8);
+    margin: var(--sp-6) 0;
+  }
+  .footer-brand-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--sp-1);
+  }
+  .footer-brand-name em { font-style: normal; color: var(--teal-400); }
+  .footer-brand-desc {
+    font-size: 12px;
+    color: var(--text-subtle);
+    line-height: 1.6;
+    max-width: 280px;
+    margin-bottom: var(--sp-6);
+  }
+  .footer-sources-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    margin-bottom: var(--sp-3);
+  }
+  .footer-source-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 13px;
+  }
+  .footer-source-row:last-child { border-bottom: none; }
+  .footer-source-link { color: var(--teal-400); text-decoration: none; }
+  .footer-source-link:hover { text-decoration: underline; }
+  .footer-source-meta { font-size: 11px; color: var(--text-faint); }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--sp-6);
+    margin-top: var(--sp-6);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-copy { font-size: 11px; color: rgba(255,255,255,0.2); }
+  .footer-disclaimer { font-size: 11px; color: rgba(255,255,255,0.2); }
+
+  /* ============================================================
+     GRID LAYOUTS
+  ============================================================ */
+  .temp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .cam-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  @media (min-width: 640px) {
+    .temp-grid { grid-template-columns: repeat(2, 1fr); }
+    .cam-grid  { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 900px) {
+    .temp-grid { grid-template-columns: repeat(3, 1fr); }
+    .cam-grid  { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ============================================================
+     UPDATE STATUS
+  ============================================================ */
+  .update-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--text-subtle);
+  }
+  .update-status svg { flex-shrink: 0; }
+
+  /* ============================================================
+     DIVIDER
+  ============================================================ */
+  .divider { border: none; border-top: 1px solid #e5e3de; margin: var(--sp-8) 0; }
+
+  /* ============================================================
+     SCROLLBAR
+  ============================================================ */
+  .guide-nav::-webkit-scrollbar { width: 4px; }
+  .guide-nav::-webkit-scrollbar-track { background: transparent; }
+  .guide-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION
+============================================================ -->
+<nav class="guide-nav">
+  <div class="guide-nav-logo">
+    Bielersee Status
+    <span>Design System v1.0</span>
+  </div>
+
+  <div class="guide-nav-section">Foundation</div>
+  <a href="#colors">Farben</a>
+  <a href="#typography">Typografie</a>
+  <a href="#spacing">Abstände</a>
+  <a href="#effects">Glassmorphism</a>
+  <a href="#animation">Animationen</a>
+
+  <div class="guide-nav-section">Komponenten</div>
+  <a href="#header">Header</a>
+  <a href="#hero">Hero Section</a>
+  <a href="#temp-card">Temperature Card</a>
+  <a href="#webcam-card">Webcam Card</a>
+  <a href="#badges">Badges & Tags</a>
+  <a href="#filter">Filter Buttons</a>
+  <a href="#chips">Hero Chips</a>
+  <a href="#source-badge">Source Badge</a>
+  <a href="#live-indicator">Live Indikator</a>
+  <a href="#scroll-cta">Scroll CTA</a>
+  <a href="#footer">Footer</a>
+
+  <div class="guide-nav-section">Patterns</div>
+  <a href="#layout">Layout</a>
+  <a href="#legend">Karten-Legende</a>
+  <a href="#tokens-ref">Token-Referenz</a>
+</nav>
+
+<!-- ============================================================
+     CONTENT
+============================================================ -->
+<main class="guide-content">
+
+  <!-- INTRO -->
+  <div class="chapter" style="border-top:none; margin-top:0; padding-top:0;">
+    <div class="chapter-tag">Design System</div>
+    <h1 class="chapter-title">Bielersee Status</h1>
+    <p class="chapter-subtitle">Alle Design-Tokens, Komponenten und Patterns für bielersee.ch — Dark-first, Glassmorphism, Lake-Farbpalette.</p>
+    <div class="note" style="margin-top: 2rem;">
+      <strong>Stack:</strong> Next.js 15 · Tailwind CSS v4 · CSS Custom Properties · System Font Stack · Leaflet (Karte) · Vanilla CSS Glass-Effekte
+    </div>
+  </div>
+
+  <!-- =============================================
+       FARBEN
+  ============================================== -->
+  <section class="chapter" id="colors">
+    <div class="chapter-tag">01 — Foundation</div>
+    <h2 class="chapter-title">Farben</h2>
+    <p class="chapter-subtitle">Eine auf Wasser und Tiefe basierende Palette. Lake-Blautöne bilden den Hintergrund, Teal ist der einzige Akzent.</p>
+
+    <h3 class="section-title">Lake — Primärpalette</h3>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="swatch-block" style="background:#0a1628;"></div><div class="swatch-info"><div class="swatch-name">lake-900</div><div class="swatch-hex">#0a1628</div><div class="swatch-var">--lake-900</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#0d2044;"></div><div class="swatch-info"><div class="swatch-name">lake-800</div><div class="swatch-hex">#0d2044</div><div class="swatch-var">--lake-800</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#0f2d5c;"></div><div class="swatch-info"><div class="swatch-name">lake-700</div><div class="swatch-hex">#0f2d5c</div><div class="swatch-var">--lake-700</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#1a4080;"></div><div class="swatch-info"><div class="swatch-name">lake-600</div><div class="swatch-hex">#1a4080</div><div class="swatch-var">--lake-600</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#2563a8;"></div><div class="swatch-info"><div class="swatch-name">lake-500</div><div class="swatch-hex">#2563a8</div><div class="swatch-var">--lake-500</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#3b82c4;"></div><div class="swatch-info"><div class="swatch-name">lake-400</div><div class="swatch-hex">#3b82c4</div><div class="swatch-var">--lake-400</div></div></div>
+    </div>
+
+    <h3 class="section-title">Teal — Akzentfarbe</h3>
+    <div class="color-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="color-swatch"><div class="swatch-block" style="background:#2dd4c8;"></div><div class="swatch-info"><div class="swatch-name">teal-400</div><div class="swatch-hex">#2dd4c8</div><div class="swatch-var">--teal-400</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#5eead4;"></div><div class="swatch-info"><div class="swatch-name">teal-300</div><div class="swatch-hex">#5eead4</div><div class="swatch-var">--teal-300</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#99f6e4;"></div><div class="swatch-info"><div class="swatch-name">teal-200</div><div class="swatch-hex">#99f6e4</div><div class="swatch-var">--teal-200</div></div></div>
+    </div>
+
+    <h3 class="section-title">Sand — Light Mode</h3>
+    <div class="color-grid" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="color-swatch"><div class="swatch-block" style="background:#fdf8f0; border:1px solid #e5e3de;"></div><div class="swatch-info"><div class="swatch-name">sand-100</div><div class="swatch-hex">#fdf8f0</div><div class="swatch-var">--sand-100</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#f5eddb; border:1px solid #e5e3de;"></div><div class="swatch-info"><div class="swatch-name">sand-200</div><div class="swatch-hex">#f5eddb</div><div class="swatch-var">--sand-200</div></div></div>
+    </div>
+
+    <h3 class="section-title">Temperatur-Status</h3>
+    <p style="font-size:14px; color:#4a4947; margin-bottom: 1rem;">Status-Farben zeigen die Badetemperatur auf einen Blick. Drei klar trennbare Kategorien.</p>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="swatch-block" style="background:#f59e0b;"></div><div class="swatch-info"><div class="swatch-name">Warm ≥ 22°C</div><div class="swatch-hex">#f59e0b</div><div class="swatch-var">--temp-warm-color</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#34d399;"></div><div class="swatch-info"><div class="swatch-name">Angenehm 18–22°C</div><div class="swatch-hex">#34d399</div><div class="swatch-var">--temp-pleasant-color</div></div></div>
+      <div class="color-swatch"><div class="swatch-block" style="background:#60a5fa;"></div><div class="swatch-info"><div class="swatch-name">Kühl &lt; 18°C</div><div class="swatch-hex">#60a5fa</div><div class="swatch-var">--temp-cool-color</div></div></div>
+    </div>
+
+    <h3 class="section-title">Text & UI</h3>
+    <table class="token-table">
+      <thead><tr><th>Variable</th><th>Wert</th><th>Vorschau</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>--text-primary</code></td><td><code>#f1f5f9</code></td><td><span class="token-preview" style="background:#f1f5f9;"></span></td><td>Überschriften, primärer Text auf Dunkel</td></tr>
+        <tr><td><code>--text-secondary</code></td><td><code>#e2e8f0</code></td><td><span class="token-preview" style="background:#e2e8f0;"></span></td><td>Body-Text auf dunklem Hintergrund</td></tr>
+        <tr><td><code>--text-muted</code></td><td><code>#94a3b8</code></td><td><span class="token-preview" style="background:#94a3b8;"></span></td><td>Sekundäre Metadaten, Quellen</td></tr>
+        <tr><td><code>--text-subtle</code></td><td><code>#64748b</code></td><td><span class="token-preview" style="background:#64748b;"></span></td><td>Ortsnamen, Timestamps</td></tr>
+        <tr><td><code>--text-faint</code></td><td><code>#475569</code></td><td><span class="token-preview" style="background:#475569;"></span></td><td>Dezente Icons, Beschriftungen</td></tr>
+        <tr><td><code>--live-green</code></td><td><code>#22c55e</code></td><td><span class="token-preview" style="background:#22c55e;"></span></td><td>Live-Indikator</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       TYPOGRAFIE
+  ============================================== -->
+  <section class="chapter" id="typography">
+    <div class="chapter-tag">01 — Foundation</div>
+    <h2 class="chapter-title">Typografie</h2>
+    <p class="chapter-subtitle">System Font Stack für maximale Performance. Keine externen Fonts — ausser im Design System selbst.</p>
+
+    <div class="note">
+      <strong>Font Stack:</strong> <code>-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif</code><br>
+      Auf macOS/iOS → San Francisco. Auf Windows → Segoe UI. Auf Android → Roboto.
+    </div>
+
+    <h3 class="section-title">Type Scale</h3>
+
+    <div class="dark-preview">
+      <div class="dark-preview-label">Dark Background Preview</div>
+
+      <div style="margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <div style="font-size: clamp(2.5rem, 7vw, 4rem); font-weight: 800; color: #f1f5f9; line-height: 1.05; letter-spacing: -0.03em;">Bielersee <em style="font-style:normal; color:#2dd4c8;">Status</em></div>
+        <div style="font-size: 12px; color: #475569; margin-top: 6px; font-family: monospace;">Hero Heading · clamp(2.5rem, 7vw, 4rem) · 800 · tracking -0.03em</div>
+      </div>
+
+      <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <div style="font-size: clamp(1.4rem, 5vw, 2.2rem); font-weight: 700; color: #f1f5f9; line-height: 1.1;">Aktuelle Temperaturen</div>
+        <div style="font-size: 12px; color: #475569; margin-top: 6px; font-family: monospace;">Section Title · clamp(1.4rem, 5vw, 2.2rem) · 700</div>
+      </div>
+
+      <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <div style="display:flex; align-items: flex-end; gap: 4px;">
+          <span style="font-size: 44px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -0.03em;">23.4</span>
+          <span style="font-size: 20px; font-weight: 600; color: #2dd4c8; margin-bottom: 4px;">°C</span>
+        </div>
+        <div style="font-size: 12px; color: #475569; margin-top: 6px; font-family: monospace;">Temperature Value · 44px · 800 · tracking -0.03em + Unit 20px · 600 · teal-400</div>
+      </div>
+
+      <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <div style="font-size: 16px; font-weight: 600; color: #f1f5f9; margin-bottom: 3px;">Erlach – Hafen</div>
+        <div style="font-size: 12px; color: #475569; font-family: monospace;">Card Title · 16px · 600</div>
+      </div>
+
+      <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <div style="font-size: 14px; color: #e2e8f0; line-height: 1.6;">Seetemperaturen, Wasserqualität und Webcams rund um den Bielersee.</div>
+        <div style="font-size: 12px; color: #475569; margin-top: 6px; font-family: monospace;">Body · 14px · 400 · line-height 1.6</div>
+      </div>
+
+      <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <div style="font-size: 12px; color: #64748b;">via Eawag Alplakes · Gerade eben</div>
+        <div style="font-size: 12px; color: #475569; margin-top: 4px; font-family: monospace;">Meta / Caption · 12px · 400 · text-subtle</div>
+      </div>
+
+      <div style="margin-bottom: 0;">
+        <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #475569;">Alle Messorte</div>
+        <div style="font-size: 12px; color: #475569; margin-top: 4px; font-family: monospace;">Label / Eyebrow · 11px · 600 · 0.12em tracking · uppercase</div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Type Scale Tokens</h3>
+    <table class="token-table">
+      <thead><tr><th>Variable</th><th>Wert</th><th>px</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>--text-xs</code></td><td><code>0.6875rem</code></td><td>11px</td><td>Labels, Eyebrows, Scrollbar-CTA</td></tr>
+        <tr><td><code>--text-sm</code></td><td><code>0.75rem</code></td><td>12px</td><td>Metadaten, Timestamps, Quelle</td></tr>
+        <tr><td><code>--text-base</code></td><td><code>0.875rem</code></td><td>14px</td><td>Body-Text, Beschreibungen</td></tr>
+        <tr><td><code>--text-lg</code></td><td><code>1rem</code></td><td>16px</td><td>Card-Titel, Nav-Links</td></tr>
+        <tr><td><code>--text-xl</code></td><td><code>1.25rem</code></td><td>20px</td><td>Grad-Einheit (°C)</td></tr>
+        <tr><td><code>--text-3xl</code></td><td><code>clamp(1.4rem, 5vw, 2.2rem)</code></td><td>22–35px</td><td>Section-Überschriften</td></tr>
+        <tr><td><code>--text-temp</code></td><td><code>2.75rem</code></td><td>44px</td><td>Temperaturzahl in Card</td></tr>
+        <tr><td><code>--text-hero</code></td><td><code>clamp(2.5rem, 7vw, 4rem)</code></td><td>40–64px</td><td>Hero-Überschrift</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       ABSTÄNDE
+  ============================================== -->
+  <section class="chapter" id="spacing">
+    <div class="chapter-tag">01 — Foundation</div>
+    <h2 class="chapter-title">Abstände</h2>
+    <p class="chapter-subtitle">4px-Grid. Alle Abstände sind Vielfache von 4px.</p>
+
+    <table class="token-table">
+      <thead><tr><th>Variable</th><th>rem</th><th>px</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>--sp-1</code></td><td>0.25rem</td><td>4px</td><td>Icon-Gaps, kleine Abstände</td></tr>
+        <tr><td><code>--sp-2</code></td><td>0.5rem</td><td>8px</td><td>Badge-Padding, Filter-Gaps</td></tr>
+        <tr><td><code>--sp-3</code></td><td>0.75rem</td><td>12px</td><td>Interne Card-Gaps</td></tr>
+        <tr><td><code>--sp-4</code></td><td>1rem</td><td>16px</td><td>Card-Footer-Margin</td></tr>
+        <tr><td><code>--sp-5</code></td><td>1.25rem</td><td>20px</td><td>Card-Padding (vertikal)</td></tr>
+        <tr><td><code>--sp-6</code></td><td>1.5rem</td><td>24px</td><td>Section-Gaps</td></tr>
+        <tr><td><code>--sp-8</code></td><td>2rem</td><td>32px</td><td>Nav-Padding, Hero-Chip-Margin</td></tr>
+        <tr><td><code>--sp-10</code></td><td>2.5rem</td><td>40px</td><td>Footer-Padding</td></tr>
+        <tr><td><code>--sp-12</code></td><td>3rem</td><td>48px</td><td>Section-Title-Margin</td></tr>
+        <tr><td><code>--sp-16</code></td><td>4rem</td><td>64px</td><td>Section-Padding (y)</td></tr>
+        <tr><td><code>--sp-20</code></td><td>5rem</td><td>80px</td><td>Hero-Padding</td></tr>
+        <tr><td><code>--sp-24</code></td><td>6rem</td><td>96px</td><td>Chapter-Padding</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-title">Border Radius</h3>
+    <table class="token-table">
+      <thead><tr><th>Variable</th><th>Wert</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>--radius-sm</code></td><td>4px</td><td>Source Badge, Code-Chips</td></tr>
+        <tr><td><code>--radius-md</code></td><td>8px</td><td>Interne Elemente</td></tr>
+        <tr><td><code>--radius-lg</code></td><td>12px</td><td>Webcam-Card, kleinere Karten</td></tr>
+        <tr><td><code>--radius-xl</code></td><td>16px</td><td>Haupt-Cards, Hero, Header, Footer</td></tr>
+        <tr><td><code>--radius-full</code></td><td>9999px</td><td>Badges, Filter-Buttons, Chips, Live-Dot</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-title">Shadows</h3>
+    <table class="token-table">
+      <thead><tr><th>Variable</th><th>Wert</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>--shadow-card</code></td><td>0 4px 24px rgba(0,0,0,0.3)</td><td>Cards im Default-State</td></tr>
+        <tr><td><code>--shadow-hover</code></td><td>0 12px 40px rgba(0,0,0,0.4)</td><td>Cards im Hover-State</td></tr>
+        <tr><td><code>--shadow-hero</code></td><td>0 32px 80px rgba(0,0,0,0.5)</td><td>Hero-Elemente</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-title">Transitions</h3>
+    <table class="token-table">
+      <thead><tr><th>Variable</th><th>Wert</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>--transition-fast</code></td><td>150ms ease</td><td>Hover-Farben, Link-States</td></tr>
+        <tr><td><code>--transition-base</code></td><td>220ms ease</td><td>Card hover (transform, shadow)</td></tr>
+        <tr><td><code>--transition-slow</code></td><td>380ms ease</td><td>Menü-Animationen</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       GLASSMORPHISM
+  ============================================== -->
+  <section class="chapter" id="effects">
+    <div class="chapter-tag">01 — Foundation</div>
+    <h2 class="chapter-title">Glassmorphism</h2>
+    <p class="chapter-subtitle">Alle Cards und Overlays verwenden Glass-Effekte. Zwei Varianten: hell-transparent und dunkel-semi-opak.</p>
+
+    <div class="dark-preview">
+      <div class="dark-preview-label">Glass Varianten</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="glass" style="padding: 20px;">
+          <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 8px; letter-spacing: 0.08em; text-transform: uppercase;">.glass</div>
+          <div style="font-size: 13px; color: #94a3b8; line-height: 1.6;">bg: rgba(255,255,255,0.06)<br>blur: 12px<br>border: rgba(255,255,255,0.10)</div>
+        </div>
+        <div class="glass-dark" style="padding: 20px;">
+          <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 8px; letter-spacing: 0.08em; text-transform: uppercase;">.glass-dark</div>
+          <div style="font-size: 13px; color: #94a3b8; line-height: 1.6;">bg: rgba(10,22,40,0.75)<br>blur: 16px<br>border: rgba(255,255,255,0.08)</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Glass Tokens</h3>
+    <table class="token-table">
+      <thead><tr><th>Variable</th><th>Wert</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>--glass-bg</code></td><td>rgba(255,255,255,0.06)</td><td>Temperature Card, Webcam Card Hintergrund</td></tr>
+        <tr><td><code>--glass-border</code></td><td>rgba(255,255,255,0.10)</td><td>Card-Rahmen</td></tr>
+        <tr><td><code>--glass-blur</code></td><td>12px</td><td>backdrop-filter: blur()</td></tr>
+        <tr><td><code>--glass-dark-bg</code></td><td>rgba(10,22,40,0.75)</td><td>Header, dunklere Overlays</td></tr>
+        <tr><td><code>--glass-dark-border</code></td><td>rgba(255,255,255,0.08)</td><td>Rahmne dunklerer Elemente</td></tr>
+        <tr><td><code>--glass-dark-blur</code></td><td>16px</td><td>Header backdrop-filter</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warning">
+      <strong>Hinweis:</strong> backdrop-filter wird von älteren Browsern nicht unterstützt. Cards funktionieren auch ohne Blur, da die Transparenz allein ausreicht. Kein Fallback nötig.
+    </div>
+  </section>
+
+  <!-- =============================================
+       ANIMATIONEN
+  ============================================== -->
+  <section class="chapter" id="animation">
+    <div class="chapter-tag">01 — Foundation</div>
+    <h2 class="chapter-title">Animationen</h2>
+    <p class="chapter-subtitle">Alle Animationen sind subtil und dienen der Orientierung — nicht der Dekoration.</p>
+
+    <div class="dark-preview">
+      <div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: center;">
+        <div style="text-align: center;">
+          <div class="live-dot" style="margin: 0 auto 8px;"></div>
+          <div style="font-size: 11px; color: #475569; font-family: monospace;">pulse-dot</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">1.8s · live-green</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="animation: bounce-arrow 1.8s ease-in-out infinite; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.03); margin: 0 auto 8px; font-size: 14px; color: #475569;">↓</div>
+          <div style="font-size: 11px; color: #475569; font-family: monospace;">bounce-arrow</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">1.8s · scroll-cta</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 120px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin: 0 auto 8px;">
+            <div style="height: 100%; background: #2dd4c8; animation: temp-bar-in 1.5s ease-out infinite alternate; transform-origin: left;"></div>
+          </div>
+          <div style="font-size: 11px; color: #475569; font-family: monospace;">temp-bar-in</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">scaleX · Balken-Einblend</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="width: 80px; height: 56px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; transition: transform 0.22s, box-shadow 0.22s; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b;" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.4)';" onmouseleave="this.style.transform='';this.style.boxShadow='';">Hover me</div>
+          <div style="font-size: 11px; color: #475569; font-family: monospace; margin-top: 8px;">card-hover</div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 2px;">translateY(-2px) · 220ms</div>
+        </div>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top: 1.5rem;">
+      <thead><tr><th>Name</th><th>CSS</th><th>Dauer</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>pulse-dot</code></td><td>opacity + scale (0.75–1)</td><td>1.8s infinite</td><td>Live-Indikator (grüner Punkt)</td></tr>
+        <tr><td><code>bounce-arrow</code></td><td>translateY(0 → 6px)</td><td>1.8s infinite</td><td>Scroll-CTA Pfeil</td></tr>
+        <tr><td><code>temp-bar-in</code></td><td>scaleX(0 → 1)</td><td>einmalig</td><td>Temperatur-Balken Einblendung</td></tr>
+        <tr><td>card-hover</td><td>translateY(-2px)</td><td>220ms ease</td><td>Alle Glass Cards (Hover)</td></tr>
+        <tr><td>scroll-behavior</td><td>smooth</td><td>—</td><td>HTML-Element, Anker-Navigation</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       HEADER
+  ============================================== -->
+  <section class="chapter" id="header">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Header</h2>
+    <p class="chapter-subtitle">Sticky Header mit Glass-Hintergrund, Logo und Desktop-Navigation. Auf Mobile: Hamburger-Menü.</p>
+
+    <div class="dark-preview" style="padding: 0; overflow: hidden; border-radius: var(--radius-xl);">
+      <div class="header-demo" style="border-radius: 0; margin: 0;">
+        <a class="header-logo" href="#">
+          <div class="header-logo-icon">〰️</div>
+          <span class="header-logo-text">Bielersee <em>Status</em></span>
+        </a>
+        <ul class="header-nav">
+          <li><a href="#">Temperaturen</a></li>
+          <li><a href="#">Webcams</a></li>
+          <li><a href="#">Karte</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="section-title">Spezifikation</h3>
+    <table class="token-table">
+      <thead><tr><th>Eigenschaft</th><th>Wert</th></tr></thead>
+      <tbody>
+        <tr><td>Höhe</td><td>64px (<code>--header-height</code>)</td></tr>
+        <tr><td>Hintergrund</td><td>rgba(10,22,40,0.92) · blur(16px)</td></tr>
+        <tr><td>Border-Bottom</td><td>1px rgba(255,255,255,0.06)</td></tr>
+        <tr><td>Position</td><td>sticky top-0, z-index 100</td></tr>
+        <tr><td>Logo Font</td><td>15px · 700 · "Bielersee" white + "Status" teal-400</td></tr>
+        <tr><td>Nav Font</td><td>14px · 500 · rgba(226,232,240,0.7) → white on hover</td></tr>
+        <tr><td>Nav Gap</td><td>2rem (32px)</td></tr>
+        <tr><td>Mobile</td><td>Hamburger ab &lt; 768px</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       HERO SECTION
+  ============================================== -->
+  <section class="chapter" id="hero">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Hero Section</h2>
+    <p class="chapter-subtitle">Vollbild-Einstieg mit Titel, Lead-Text, Ø-Temperatur-Box, Hottest/Coldest-Chips und Scroll-CTA.</p>
+
+    <div class="dark-preview" style="padding: 0; overflow: hidden; border-radius: var(--radius-xl);">
+      <div class="hero-demo" style="border-radius: 0; margin: 0; min-height: 520px;">
+        <div class="hero-bg-glow"></div>
+        <div class="hero-icon">〰️</div>
+        <h2 class="hero-heading" style="position:relative;">Bielersee <em>Status</em></h2>
+        <p class="hero-lead">Seetemperaturen, Wasserqualität und Webcams rund um den Bielersee</p>
+        <div class="hero-stat-box">
+          <div class="hero-stat-label">Ø Seetemperatur</div>
+          <div class="hero-stat-value">23.4<sup>°C</sup></div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 28px; position: relative;">
+          <div class="hero-chip">
+            <span style="color: #f59e0b; font-size: 13px;">📍</span>
+            Wärmster: <strong>Erlach – Hafen</strong> <span style="color: #f59e0b; font-weight: 700;">24.9°C</span>
+          </div>
+          <div class="hero-chip">
+            <span style="color: #60a5fa; font-size: 13px;">📍</span>
+            Kühlster: <strong>Biel – Strandbad</strong> <span style="color: #60a5fa; font-weight: 700;">21.5°C</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748b; position: relative; margin-bottom: 28px;">
+          <span style="font-size: 12px;">🕐</span> Gerade eben
+        </div>
+        <a class="scroll-cta" href="#" style="position:relative;">
+          Alle Messorte
+          <span class="scroll-cta-arrow" style="animation: bounce-arrow 1.8s ease-in-out infinite;">↓</span>
+        </a>
+      </div>
+    </div>
+
+    <h3 class="section-title">Hero Elemente</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Stil</th></tr></thead>
+      <tbody>
+        <tr><td>Hintergrund</td><td>--lake-900 + radial-gradient lake-500 blau-Schimmer</td></tr>
+        <tr><td>Icon Circle</td><td>56px · bg rgba(teal,0.10) · border rgba(teal,0.20)</td></tr>
+        <tr><td>Heading</td><td>clamp(2.5rem,7vw,4rem) · 800 · -0.03em · "Status" in teal</td></tr>
+        <tr><td>Lead</td><td>17px · rgba(226,232,240,0.65) · max-width 480px</td></tr>
+        <tr><td>Stat Box</td><td>Glass · 48px / 800 + °C in teal-400 22px</td></tr>
+        <tr><td>Chips (warm/cool)</td><td>border rgba(white,0.12) · blur 8px · Temperatur farbig</td></tr>
+        <tr><td>Timestamp</td><td>12px · text-subtle · Clock-Icon</td></tr>
+        <tr><td>Scroll CTA</td><td>11px · uppercase · tracking 0.12em · Pfeil-Button 36px</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       TEMPERATURE CARD
+  ============================================== -->
+  <section class="chapter" id="temp-card">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Temperature Card</h2>
+    <p class="chapter-subtitle">Hauptdaten-Karte. Zeigt Messort, Temperatur, Status und Quelle. Alle drei Status-Varianten.</p>
+
+    <div class="dark-preview">
+      <div class="dark-preview-label">Alle Status-Varianten</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+
+        <!-- Warm -->
+        <div class="temp-card">
+          <div class="temp-card-accent" style="background: linear-gradient(90deg, #f59e0b, transparent);"></div>
+          <div class="temp-card-header">
+            <div>
+              <div class="temp-card-name">Erlach – Hafen</div>
+              <div class="temp-card-location">📍 Erlach</div>
+            </div>
+            <span class="status-badge badge-warm">Warm</span>
+          </div>
+          <div class="temp-value">
+            <span class="temp-number">24.9</span>
+            <span class="temp-unit">°C</span>
+          </div>
+          <div class="temp-card-footer">
+            <span class="source-badge">Eawag Alplakes</span>
+            <div class="update-status">
+              <span>🕐</span> Gerade eben
+            </div>
+          </div>
+        </div>
+
+        <!-- Pleasant -->
+        <div class="temp-card">
+          <div class="temp-card-accent" style="background: linear-gradient(90deg, #34d399, transparent);"></div>
+          <div class="temp-card-header">
+            <div>
+              <div class="temp-card-name">Nidau – Seeufer</div>
+              <div class="temp-card-location">📍 Nidau</div>
+            </div>
+            <span class="status-badge badge-pleasant">Angenehm</span>
+          </div>
+          <div class="temp-value">
+            <span class="temp-number">21.8</span>
+            <span class="temp-unit">°C</span>
+          </div>
+          <div class="temp-card-footer">
+            <span class="source-badge">Eawag Alplakes</span>
+            <div class="update-status">
+              <span>🕐</span> Gerade eben
+            </div>
+          </div>
+        </div>
+
+        <!-- Cool -->
+        <div class="temp-card">
+          <div class="temp-card-accent" style="background: linear-gradient(90deg, #60a5fa, transparent);"></div>
+          <div class="temp-card-header">
+            <div>
+              <div class="temp-card-name">Tüscherz – Ufer</div>
+              <div class="temp-card-location">📍 Tüscherz-Alfermée</div>
+            </div>
+            <span class="status-badge badge-cool">Kühl</span>
+          </div>
+          <div class="temp-value">
+            <span class="temp-number">17.2</span>
+            <span class="temp-unit">°C</span>
+          </div>
+          <div class="temp-card-footer">
+            <span class="source-badge">badi-info.ch</span>
+            <div class="update-status">
+              <span>🕐</span> Vor 2 Std.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <h3 class="section-title">Card Anatomie</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Stil</th></tr></thead>
+      <tbody>
+        <tr><td>Container</td><td>Glass · padding 20px 22px · radius-xl · overflow hidden</td></tr>
+        <tr><td>Accent Line</td><td>2px oben · gradient(status-color → transparent)</td></tr>
+        <tr><td>Name</td><td>16px · 600 · text-primary</td></tr>
+        <tr><td>Location</td><td>12px · text-subtle · Pin-Icon</td></tr>
+        <tr><td>Status Badge</td><td>11px · 600 · radius-full · farbiger BG/Border</td></tr>
+        <tr><td>Temperatur</td><td>44px · 800 · #fff · tracking -0.03em</td></tr>
+        <tr><td>Einheit °C</td><td>20px · 600 · teal-400 · mb 4px</td></tr>
+        <tr><td>Source Badge</td><td>11px · text-muted · radius-sm · subtiler Rahmen</td></tr>
+        <tr><td>Timestamp</td><td>12px · text-subtle · Clock-Icon</td></tr>
+        <tr><td>Hover</td><td>translateY(-2px) · shadow-hover · 220ms ease</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       WEBCAM CARD
+  ============================================== -->
+  <section class="chapter" id="webcam-card">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Webcam Card</h2>
+    <p class="chapter-subtitle">Bild-zuerst-Card mit Zeitstempel-Overlay, Beschreibung und Öffnen-Link.</p>
+
+    <div class="dark-preview">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+        <div class="webcam-card">
+          <div class="webcam-img-placeholder">
+            <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #475569;">Webcam Bild</span>
+            <div class="webcam-time">16:36</div>
+          </div>
+          <div class="webcam-body">
+            <div class="webcam-name">Magglingen – Bielersee</div>
+            <div class="webcam-location">📍 Magglingen/Macolin</div>
+            <div class="webcam-desc">Blick von Magglingen auf den Bielersee.</div>
+            <div class="webcam-footer">
+              <span class="webcam-via">via windy.com</span>
+              <a class="webcam-open-btn" href="#">Öffnen ↗</a>
+            </div>
+          </div>
+        </div>
+        <div class="webcam-card">
+          <div class="webcam-img-placeholder">
+            <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #475569;">Webcam Bild</span>
+            <div class="webcam-time">16:36</div>
+          </div>
+          <div class="webcam-body">
+            <div class="webcam-name">Ligerz – Petersinsel</div>
+            <div class="webcam-location">📍 Ligerz</div>
+            <div class="webcam-desc">Blick auf den Bielersee mit der Petersinsel.</div>
+            <div class="webcam-footer">
+              <span class="webcam-via">via windy.com</span>
+              <a class="webcam-open-btn" href="#">Öffnen ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Card Anatomie</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Stil</th></tr></thead>
+      <tbody>
+        <tr><td>Container</td><td>Glass · radius-xl · overflow hidden</td></tr>
+        <tr><td>Bild</td><td>aspect-ratio 16/9 · object-fit cover</td></tr>
+        <tr><td>Zeitstempel</td><td>absolute oben-rechts · 11px · rgba(0,0,0,0.45) BG · radius-sm</td></tr>
+        <tr><td>Name</td><td>14px · 600 · text-primary</td></tr>
+        <tr><td>Location</td><td>12px · text-subtle · mb 8px</td></tr>
+        <tr><td>Beschreibung</td><td>12px · text-muted · line-height 1.5</td></tr>
+        <tr><td>Via-Text</td><td>11px · text-faint</td></tr>
+        <tr><td>Öffnen-Link</td><td>12px · 600 · teal-400 · ↗ Pfeil</td></tr>
+        <tr><td>Hover</td><td>translateY(-2px) · shadow-hover · 220ms ease</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       BADGES & TAGS
+  ============================================== -->
+  <section class="chapter" id="badges">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Badges & Tags</h2>
+
+    <div class="dark-preview">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+        <span class="status-badge badge-warm">Warm</span>
+        <span class="status-badge badge-pleasant">Angenehm</span>
+        <span class="status-badge badge-cool">Kühl</span>
+      </div>
+    </div>
+
+    <table class="token-table">
+      <thead><tr><th>Klasse</th><th>Color</th><th>BG</th><th>Border</th></tr></thead>
+      <tbody>
+        <tr><td><code>.badge-warm</code></td><td>#f59e0b</td><td>rgba(245,158,11,0.10)</td><td>rgba(245,158,11,0.20)</td></tr>
+        <tr><td><code>.badge-pleasant</code></td><td>#34d399</td><td>rgba(52,211,153,0.10)</td><td>rgba(52,211,153,0.20)</td></tr>
+        <tr><td><code>.badge-cool</code></td><td>#60a5fa</td><td>rgba(96,165,250,0.10)</td><td>rgba(96,165,250,0.20)</td></tr>
+      </tbody>
+    </table>
+    <div class="note">Alle Badges: <code>font-size: 11px · font-weight: 600 · padding: 3px 10px · border-radius: var(--radius-full)</code></div>
+  </section>
+
+  <!-- =============================================
+       FILTER BUTTONS
+  ============================================== -->
+  <section class="chapter" id="filter">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Filter Buttons</h2>
+    <p class="chapter-subtitle">Pill-förmige Filter-Buttons für Temperatur-Grid und Sort-Optionen. Active-State in Teal.</p>
+
+    <div class="dark-preview">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+        <button class="filter-btn filter-btn-active">☰ Alle</button>
+        <button class="filter-btn filter-btn-inactive">Alplakes</button>
+        <button class="filter-btn filter-btn-inactive">badi-info.ch</button>
+        <div style="margin-left: auto;">
+          <button class="filter-btn filter-btn-inactive">↕ Wärmste</button>
+        </div>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top: 1rem;">
+      <thead><tr><th>State</th><th>Background</th><th>Color</th><th>Border</th></tr></thead>
+      <tbody>
+        <tr><td>Active</td><td>rgba(45,212,200,0.12)</td><td>teal-400</td><td>rgba(45,212,200,0.30)</td></tr>
+        <tr><td>Inactive</td><td>transparent</td><td>text-muted</td><td>rgba(255,255,255,0.12)</td></tr>
+        <tr><td>Hover (inactive)</td><td>transparent</td><td>text-primary</td><td>rgba(255,255,255,0.25)</td></tr>
+      </tbody>
+    </table>
+    <div class="note">Alle Buttons: <code>6px 14px · border-radius: full · font-size: 13px · font-weight: 500 · transition: 150ms</code></div>
+  </section>
+
+  <!-- =============================================
+       HERO CHIPS
+  ============================================== -->
+  <section class="chapter" id="chips">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Hero Chips</h2>
+    <p class="chapter-subtitle">Im Hero-Bereich: Wärmster und Kühlster Messort auf einen Blick.</p>
+
+    <div class="dark-preview">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <div class="hero-chip">
+          <span style="color: #f59e0b;">📍</span>
+          Wärmster: <strong>Erlach – Hafen</strong> <span style="color: #f59e0b; font-weight: 700;">24.9°C</span>
+        </div>
+        <div class="hero-chip">
+          <span style="color: #60a5fa;">📍</span>
+          Kühlster: <strong>Biel – Strandbad</strong> <span style="color: #60a5fa; font-weight: 700;">21.5°C</span>
+        </div>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top:1rem;">
+      <thead><tr><th>Eigenschaft</th><th>Wert</th></tr></thead>
+      <tbody>
+        <tr><td>Padding</td><td>9px 18px</td></tr>
+        <tr><td>Background</td><td>rgba(255,255,255,0.04)</td></tr>
+        <tr><td>Border</td><td>1px rgba(255,255,255,0.12)</td></tr>
+        <tr><td>Blur</td><td>8px</td></tr>
+        <tr><td>Font</td><td>13px · text-secondary</td></tr>
+        <tr><td>Temperatur</td><td>font-weight 700 · Statusfarbe (warm/cool)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       SOURCE BADGE
+  ============================================== -->
+  <section class="chapter" id="source-badge">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Source Badge</h2>
+    <p class="chapter-subtitle">Zeigt die Datenquelle innerhalb einer Card an.</p>
+
+    <div class="dark-preview">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <span class="source-badge">🗄 Eawag Alplakes</span>
+        <span class="source-badge">🗄 badi-info.ch</span>
+        <span class="source-badge">📹 bielersee.live</span>
+        <span class="source-badge">🗄 BAFU</span>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top:1rem;">
+      <thead><tr><th>Eigenschaft</th><th>Wert</th></tr></thead>
+      <tbody>
+        <tr><td>Background</td><td>rgba(255,255,255,0.05)</td></tr>
+        <tr><td>Border</td><td>1px rgba(255,255,255,0.08)</td></tr>
+        <tr><td>Radius</td><td>radius-sm (4px)</td></tr>
+        <tr><td>Padding</td><td>2px 7px</td></tr>
+        <tr><td>Font</td><td>11px · text-muted</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       LIVE INDIKATOR
+  ============================================== -->
+  <section class="chapter" id="live-indicator">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Live Indikator</h2>
+
+    <div class="dark-preview">
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+          <span class="live-dot"></span> Gerade eben
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b;">
+          <span class="live-dot"></span> Live
+        </div>
+        <div style="font-size: 12px; font-family: monospace; color: #475569;">
+          7×7px · border-radius: 50% · #22c55e<br>
+          animation: pulse-dot 1.8s ease-in-out infinite
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       SCROLL CTA
+  ============================================== -->
+  <section class="chapter" id="scroll-cta">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Scroll CTA</h2>
+
+    <div class="dark-preview" style="text-align: center; padding: var(--sp-12);">
+      <a class="scroll-cta" href="#">
+        Alle Messorte
+        <span class="scroll-cta-arrow" style="animation: bounce-arrow 1.8s ease-in-out infinite;">↓</span>
+      </a>
+    </div>
+
+    <table class="token-table" style="margin-top: 1rem;">
+      <thead><tr><th>Eigenschaft</th><th>Wert</th></tr></thead>
+      <tbody>
+        <tr><td>Text</td><td>11px · 600 · uppercase · tracking 0.12em · text-faint</td></tr>
+        <tr><td>Hover Text</td><td>color: teal-400 · 200ms ease</td></tr>
+        <tr><td>Pfeil-Button</td><td>36×36px · border-radius: 50% · rgba(white,0.03) bg</td></tr>
+        <tr><td>Pfeil Animation</td><td>bounce-arrow 1.8s ease-in-out infinite</td></tr>
+        <tr><td>Hover Pfeil</td><td>border teal-transparenz · bg teal-transparenz</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       FOOTER
+  ============================================== -->
+  <section class="chapter" id="footer">
+    <div class="chapter-tag">02 — Komponenten</div>
+    <h2 class="chapter-title">Footer</h2>
+
+    <div class="footer-demo">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div>
+          <div class="footer-brand-name">Bielersee <em>Status</em></div>
+          <div class="footer-brand-desc">Aktuelle Wassertemperaturen und Webcams rund um den Bielersee. Inoffizielle Informationsseite.</div>
+        </div>
+        <div>
+          <div class="footer-sources-title">Datenquellen</div>
+          <div class="footer-source-row">
+            <a class="footer-source-link" href="#">badi-info.ch</a>
+            <span class="footer-source-meta">Badestrand-Temperaturen</span>
+          </div>
+          <div class="footer-source-row">
+            <a class="footer-source-link" href="#">Eawag Alplakes</a>
+            <span class="footer-source-meta">Seesimulationen · Apache 2.0</span>
+          </div>
+          <div class="footer-source-row">
+            <a class="footer-source-link" href="#">bielersee.live</a>
+            <span class="footer-source-meta">Webcams & Live-Ansichten</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 Bielersee Status · Karten: © OpenStreetMap contributors, © CARTO</span>
+        <span class="footer-disclaimer">Keine Gewähr für die Richtigkeit der Angaben</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       LAYOUT PATTERNS
+  ============================================== -->
+  <section class="chapter" id="layout">
+    <div class="chapter-tag">03 — Patterns</div>
+    <h2 class="chapter-title">Layout</h2>
+    <p class="chapter-subtitle">Responsive Grid-System für Temperature- und Webcam-Bereich.</p>
+
+    <h3 class="section-title">Temperature Grid</h3>
+    <table class="token-table">
+      <thead><tr><th>Breakpoint</th><th>Spalten</th><th>Gap</th></tr></thead>
+      <tbody>
+        <tr><td>&lt; 480px</td><td>1</td><td>12px</td></tr>
+        <tr><td>480px</td><td>2</td><td>12px</td></tr>
+        <tr><td>768px</td><td>2</td><td>16px</td></tr>
+        <tr><td>1024px</td><td>3</td><td>16px</td></tr>
+        <tr><td>1280px</td><td>4</td><td>16px</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-title">Webcam Grid</h3>
+    <table class="token-table">
+      <thead><tr><th>Breakpoint</th><th>Spalten</th><th>Gap</th></tr></thead>
+      <tbody>
+        <tr><td>&lt; 480px</td><td>1</td><td>14px</td></tr>
+        <tr><td>480px</td><td>2</td><td>14px</td></tr>
+        <tr><td>768px</td><td>2</td><td>16px</td></tr>
+        <tr><td>1024px</td><td>3</td><td>16px</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-title">Container</h3>
+    <table class="token-table">
+      <thead><tr><th>Variable</th><th>Wert</th><th>Verwendung</th></tr></thead>
+      <tbody>
+        <tr><td><code>--container-max</code></td><td>1152px</td><td>section-inner max-width</td></tr>
+        <tr><td><code>--header-height</code></td><td>64px</td><td>Header-Höhe, sticky</td></tr>
+        <tr><td><code>--section-py</code></td><td>56–80px responsive</td><td>Vertikaler Section-Abstand</td></tr>
+        <tr><td>section-inner padding</td><td>16 / 20 / 24px responsive</td><td>Horizontaler Content-Abstand</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       KARTENLEGENDE
+  ============================================== -->
+  <section class="chapter" id="legend">
+    <div class="chapter-tag">03 — Patterns</div>
+    <h2 class="chapter-title">Karten-Legende</h2>
+    <p class="chapter-subtitle">Leaflet-Karte mit Custom Marker und Popup. Legende direkt über der Karte.</p>
+
+    <div class="dark-preview">
+      <div class="legend-row">
+        <div class="legend-item"><div class="legend-dot" style="background: #f59e0b;"></div> Warm (≥22°C)</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #34d399;"></div> Angenehm (18–22°C)</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #60a5fa;"></div> Kühl (&lt;18°C)</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #94a3b8;"></div> Webcam</div>
+      </div>
+      <div style="background: var(--lake-800); border-radius: var(--radius-lg); height: 120px; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 12px;">
+        Leaflet Karte · © OpenStreetMap · © CARTO
+      </div>
+    </div>
+
+    <h3 class="section-title">Leaflet Overrides</h3>
+    <table class="token-table">
+      <thead><tr><th>Element</th><th>Override</th></tr></thead>
+      <tbody>
+        <tr><td>.leaflet-container</td><td>border-radius: radius-xl</td></tr>
+        <tr><td>.leaflet-popup-content-wrapper</td><td>transparent (Custom dark Popup)</td></tr>
+        <tr><td>.leaflet-popup-tip</td><td>transparent</td></tr>
+        <tr><td>.leaflet-popup-close-button</td><td>color: text-subtle → text-primary on hover</td></tr>
+        <tr><td>Custom Marker</td><td>Flex-centered, Farbe nach Temperatur-Status</td></tr>
+        <tr><td>Popup Card</td><td>Glass-Dark · radius-xl · dark text</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- =============================================
+       TOKEN REFERENZ
+  ============================================== -->
+  <section class="chapter" id="tokens-ref">
+    <div class="chapter-tag">03 — Patterns</div>
+    <h2 class="chapter-title">Token-Referenz</h2>
+    <p class="chapter-subtitle">Vollständige CSS-Custom-Properties zum Einbinden in globals.css.</p>
+
+    <div style="background: var(--lake-900); border-radius: var(--radius-xl); padding: var(--sp-8); margin: var(--sp-6) 0;">
+      <pre style="font-size: 12px; font-family: var(--font-mono); color: #94a3b8; line-height: 1.8; overflow-x: auto; margin: 0; white-space: pre-wrap;"><code style="color: #5eead4; font-family: inherit;">:root {</code>
+  <code style="color: #64748b; font-family: inherit;">/* Lake Palette */</code>
+  <code style="color: #94a3b8; font-family: inherit;">--lake-900: #0a1628;
+  --lake-800: #0d2044;
+  --lake-700: #0f2d5c;
+  --lake-600: #1a4080;
+  --lake-500: #2563a8;
+  --lake-400: #3b82c4;
+
+  </code><code style="color: #64748b; font-family: inherit;">/* Teal Accent */</code>
+  <code style="color: #94a3b8; font-family: inherit;">--teal-400: #2dd4c8;
+  --teal-300: #5eead4;
+  --teal-200: #99f6e4;
+
+  </code><code style="color: #64748b; font-family: inherit;">/* Temperature Status */</code>
+  <code style="color: #94a3b8; font-family: inherit;">--temp-warm-color:      #f59e0b;
+  --temp-warm-bg:        rgba(245,158,11,0.10);
+  --temp-warm-border:    rgba(245,158,11,0.20);
+  --temp-pleasant-color: #34d399;
+  --temp-pleasant-bg:    rgba(52,211,153,0.10);
+  --temp-pleasant-border:rgba(52,211,153,0.20);
+  --temp-cool-color:     #60a5fa;
+  --temp-cool-bg:        rgba(96,165,250,0.10);
+  --temp-cool-border:    rgba(96,165,250,0.20);
+
+  </code><code style="color: #64748b; font-family: inherit;">/* Text */</code>
+  <code style="color: #94a3b8; font-family: inherit;">--text-primary:   #f1f5f9;
+  --text-secondary: #e2e8f0;
+  --text-muted:     #94a3b8;
+  --text-subtle:    #64748b;
+  --text-faint:     #475569;
+  --live-green:     #22c55e;
+
+  </code><code style="color: #64748b; font-family: inherit;">/* Glass */</code>
+  <code style="color: #94a3b8; font-family: inherit;">--glass-bg:          rgba(255,255,255,0.06);
+  --glass-border:      rgba(255,255,255,0.10);
+  --glass-blur:        12px;
+  --glass-dark-bg:     rgba(10,22,40,0.75);
+  --glass-dark-border: rgba(255,255,255,0.08);
+  --glass-dark-blur:   16px;
+
+  </code><code style="color: #64748b; font-family: inherit;">/* Radius */</code>
+  <code style="color: #94a3b8; font-family: inherit;">--radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  </code><code style="color: #64748b; font-family: inherit;">/* Layout */</code>
+  <code style="color: #94a3b8; font-family: inherit;">--container-max:  1152px;
+  --header-height:  64px;
+  --section-py:     4rem;
+
+  </code><code style="color: #64748b; font-family: inherit;">/* Transitions */</code>
+  <code style="color: #94a3b8; font-family: inherit;">--transition-fast: 150ms ease;
+  --transition-base: 220ms ease;
+  --transition-slow: 380ms ease;
+</code><code style="color: #5eead4; font-family: inherit;">}</code></pre>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.guide-nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>
