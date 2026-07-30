@@ -42,7 +42,7 @@ function alplakesTime(d: Date): string {
 
 export async function fetchWindData(): Promise<WindData | null> {
   try {
-    const url = 'https://api.existenz.ch/apiv1/smn/latest?parameters=ff,fx,dd&locations=CDF&app=bielersee-status';
+    const url = 'https://api.existenz.ch/apiv1/smn/latest?parameters=ff,fx,dd&locations=BIE&app=bielersee-status';
     const res = await fetch(url, { next: { revalidate: 600 } });
     if (!res.ok) return null;
 
@@ -65,8 +65,8 @@ export async function fetchWindData(): Promise<WindData | null> {
       directionLabel: dd !== null ? toDirLabel(dd) : null,
       beaufort: bft,
       beaufortLabel: BFT_LABELS[bft],
-      station: 'La Chaux-de-Fonds',
-      stationCode: 'CDF',
+      station: 'Biel/Bienne',
+      stationCode: 'BIE',
       updatedAt: new Date().toISOString(),
     };
   } catch {
