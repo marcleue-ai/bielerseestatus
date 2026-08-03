@@ -1,0 +1,43 @@
+name: Update CHANGELOG on Push
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - '!docs/**'
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get commit info
+        id: commit_info
+        run: |
+          echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "COMMIT_DATE=$(date '+%Y-%m-%d %H:%M')" >> $GITHUB_OUTPUT
+          echo "COMMIT_MSG=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+
+      - name: Update CHANGELOG.md timestamp
+        run: |
+          # Ersetze "Stand: ..." in CHANGELOG.md
+          sed -i "s/^**Stand:** .*/**Stand:** ${{ steps.commit_info.outputs.COMMIT_DATE }} (Commit: ${{ steps.commit_info.outputs.COMMIT_SHA }})/" docs/CHANGELOG.md
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/CHANGELOG.md
+          git commit -m "docs: auto-update CHANGELOG timestamp" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          git push origin main || echo "Push failed or no changes"
